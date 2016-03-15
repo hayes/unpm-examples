@@ -5,7 +5,7 @@ var www = require('unpm-www')
 var UNPM = require('unpm')
 var path = require('path')
 
-var bucket = process.env.UNPM_S3_BUCKET
+var bucket = "unpm-s3-backend-test"
 
 var config = {
   host: {
@@ -13,18 +13,24 @@ var config = {
     port: process.env.UNPM_PORT || 8123,
     protocol: 'http'
   },
+  verbose: true,
+  fallback: 'http://registry.npmjs.org',
+  checkauth: true,
   backend: backend({
-    s3: {params: {Bucket: bucket}},
-    baseUrl: 'https://s3-us-east-1.amazonaws.com/' + bucket + '/',
-    users: {prefix: '~/users/'), Bucket: bucket},
-    meta: {prefix: '/', Bucket: bucket},
-    store: {prefix: '~/store/'), Bucket: bucket},
-    tarballs: {prefix: '/'), Bucket: bucket}
+    s3: {params: {Bucket: bucket, region: "us-west-2" }},
+    baseUrl: 'https://s3-us-west-2.amazonaws.com/' + bucket + '/',
+    users: {prefix: '~/users/', Bucket: bucket},
+    meta: {prefix: '~/meta/', Bucket: bucket},
+    store: {prefix: '~/store/', Bucket: bucket},
+    tarballs: {prefix: '~/tarballs/', Bucket: bucket}
   }),
   User: ldapAuth({
     url: 'ldap://localhost:8321',
-    searchBase: 'ou=example-org',
-    searchFilter: '(uid={{username}})'
+    adminDn: "cn=root",
+    adminPassword: "secret",
+    searchBase: "ou=example-org",
+    searchFilter: 'uid={{username}}',
+    verbose: true
   })
 }
 

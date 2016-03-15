@@ -2,7 +2,7 @@ var ldap = require('ldapjs')
 
 var SUFFIX = 'ou=example-org'
 
-module.exports = createServer
+createServer().listen(8321)
 
 function createServer () {
   var server = ldap.createServer()
